@@ -1,0 +1,468 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 2.2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #555;
+    font-size: 1.1em;
+}
+
+/* Game Controls */
+.game-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.difficulty-btn, .control-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.difficulty-btn:hover, .control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.easy { background: #4CAF50; color: white; }
+.medium { background: #FF9800; color: white; }
+.hard { background: #f44336; color: white; }
+.control-btn { background: #2196F3; color: white; }
+
+/* Sudoku Grid */
+.sudoku-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.sudoku-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 1px;
+    background: #444;
+    padding: 2px;
+    border-radius: 6px;
+    border: 2px solid #444;
+    max-width: 400px;
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+}
+
+/* Highlight styles */
+.cell.highlight-row {
+    background: #fff8e1 !important;
+}
+
+.cell.highlight-col {
+    background: #e8f5e8 !important;
+}
+
+.cell.highlight-box {
+    background: #f3e5f5 !important;
+}
+
+.cell.highlight-same-number {
+    background: #ffecb3 !important;
+    font-weight: bold;
+}
+
+/* Dark theme highlights */
+body.dark-theme .cell.highlight-row {
+    background: #2d3748 !important;
+}
+
+body.dark-theme .cell.highlight-col {
+    background: #2d4d3d !important;
+}
+
+body.dark-theme .cell.highlight-box {
+    background: #4a2d4d !important;
+}
+
+body.dark-theme .cell.highlight-same-number {
+    background: #5d4037 !important;
+    color: #ffcc80 !important;
+}
+
+/* Ensure selected cell stands out over highlights */
+.cell.selected {
+    z-index: 10 !important;
+    box-shadow: 0 0 0 2px #4CAF50 !important;
+}
+
+body.dark-theme .cell.selected {
+    box-shadow: 0 0 0 2px #00b894 !important;
+}
+
+.cell.initial {
+    color: #000;
+    background: #f8f9fa;
+    font-weight: 700;
+}
+
+.cell.user {
+    color: #2196F3;
+}
+
+.cell.selected {
+    background: #e8f5e8 !important;
+    border: 2px solid #4CAF50 !important;
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.cell.same-number {
+    background: #f0f8ff;
+}
+
+.cell.error {
+    background: #ffebee !important;
+    color: #f44336;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Thick borders for 3x3 boxes */
+.cell:nth-child(3n) {
+    border-right: 1px solid #444;
+}
+
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 1px solid #444;
+}
+
+.cell:nth-child(9n) {
+    border-right: none;
+}
+
+.cell:nth-child(n+73) {
+    border-bottom: none;
+}
+
+/* Number Pad */
+.number-pad {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.number-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    max-width: 300px;
+}
+
+.num-btn {
+    padding: 15px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 50px;
+}
+
+.num-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.num-btn.erase {
+    background: #ffebee;
+    color: #f44336;
+    grid-column: span 2;
+}
+
+.num-btn.erase:hover {
+    background: #ffcdd2;
+}
+
+/* Theme Selector */
+.theme-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.theme-btn {
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.theme-btn.active {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+}
+
+.theme-btn:hover {
+    transform: scale(1.05);
+}
+
+.instructions {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #666;
+}
+
+/* ==================== */
+/* IMPROVED DARK THEME */
+/* ==================== */
+body.dark-theme {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+body.dark-theme .container {
+    background: #0f3460;
+    color: #e0e0e0;
+    border: 1px solid #1a1a2e;
+}
+
+body.dark-theme h1 {
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-theme .game-info {
+    background: #1a1a2e;
+    color: #b0b0b0;
+    border: 1px solid #2d2d4d;
+}
+
+body.dark-theme .sudoku-grid {
+    background: #2d2d4d;
+    border: 2px solid #3d3d6d;
+    gap: 0.5px;
+}
+
+body.dark-theme .cell {
+    background: #1a1a2e;
+    color: #ffffff;
+    border: 0.5px solid #3d3d6d;
+}
+
+body.dark-theme .cell.initial {
+    background: #2d2d4d;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+body.dark-theme .cell.user {
+    color: #4fc3f7;
+}
+
+body.dark-theme .cell.selected {
+    background: #00b894 !important;
+    color: #000000;
+    font-weight: bold;
+    border: 2px solid #00d8a7 !important;
+}
+
+body.dark-theme .cell.same-number {
+    background: #2d4d6d;
+}
+
+body.dark-theme .cell.error {
+    background: #e74c3c !important;
+    color: #ffffff;
+}
+
+body.dark-theme .number-buttons .num-btn {
+    background: #1a1a2e;
+    color: #ffffff;
+    border: 2px solid #3d3d6d;
+}
+
+body.dark-theme .number-buttons .num-btn:hover {
+    background: #2d2d4d;
+    border-color: #00b894;
+}
+
+body.dark-theme .number-buttons .num-btn.erase {
+    background: #c44569;
+    color: #ffffff;
+}
+
+body.dark-theme .number-buttons .num-btn.erase:hover {
+    background: #e6678d;
+}
+
+body.dark-theme .instructions {
+    background: #1a1a2e;
+    color: #888;
+    border: 1px solid #2d2d4d;
+}
+
+/* Dark theme grid borders */
+body.dark-theme .cell:nth-child(3n) {
+    border-right: 1px solid #3d3d6d;
+}
+
+body.dark-theme .cell:nth-child(n+19):nth-child(-n+27),
+body.dark-theme .cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 1px solid #3d3d6d;
+}
+
+/* Blue Theme */
+body.blue-theme {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+body.blue-theme .container {
+    background: #e3f2fd;
+}
+
+body.blue-theme h1 {
+    color: #1565c0;
+}
+
+body.blue-theme .cell {
+    background: #bbdefb;
+}
+
+body.blue-theme .cell.initial {
+    background: #90caf9;
+}
+
+/* Green Theme */
+body.green-theme {
+    background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+}
+
+body.green-theme .container {
+    background: #e8f5e8;
+}
+
+body.green-theme h1 {
+    color: #2e7d32;
+}
+
+body.green-theme .cell {
+    background: #c8e6c9;
+}
+
+body.green-theme .cell.initial {
+    background: #a5d6a7;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .cell {
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+    }
+    
+    .difficulty-btn, .control-btn {
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .number-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 250px;
+    }
+    
+    .num-btn {
+        padding: 12px;
+        min-width: 40px;
+        font-size: 16px;
+    }
+    
+}
